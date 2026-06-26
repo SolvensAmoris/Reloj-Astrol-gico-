@@ -253,10 +253,47 @@ async function generateReading() {
     document.getElementById('formError').classList.remove('hidden');
     return;
   }
+
+  // Ocultamos errores y avisamos que estamos consultando
   document.getElementById('formError').classList.add('hidden');
-  document.getElementById('readBtn').disabled = true;
-  alert('✓ Lectura diaria lista. La versión premium incluye carta astral completa + PDF.');
-  document.getElementById('readBtn').disabled = false;
+  const btn = document.getElementById('readBtn');
+  btn.disabled = true;
+  btn.innerText = '✦ Consultando los astros... ✦';
+
+  try {
+    // Usamos tu puente seguro en Vercel
+    const response = await fetch('/api/consultar-reloj', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fechaNacimiento: birthDate })
+    });
+
+    const data = await response.json();
+    const textoAstrologico = data.content && data.content[0] ? data.content[0].text : "Los astros se han alineado.";
+
+    // Mostramos el resultado en la versión gratuita
+    let freeResult = document.getElementById('freeResultText');
+    if (!freeResult) {
+        freeResult = document.createElement('div');
+        freeResult.id = 'freeResultText';
+        freeResult.style.marginTop = '20px';
+        freeResult.style.padding = '15px';
+        freeResult.style.borderTop = '1px solid rgba(201,168,76,0.2)';
+        freeResult.style.color = '#e8e0f0';
+        freeResult.style.fontSize = '0.9rem';
+        freeResult.style.lineHeight = '1.6';
+        document.getElementById('freeForm').appendChild(freeResult);
+    }
+    
+    freeResult.innerHTML = `<p style="color: #c9a84c; margin-bottom: 10px;">✦ Tu Lectura Diaria</p>${textoAstrologico.replace(/\n/g, '<br>')}`;
+    btn.innerText = '✦ Consultar el Reloj ✦';
+    btn.disabled = false;
+
+  } catch (error) {
+    alert('El velo está cerrado. Intenta de nuevo.');
+    btn.innerText = '✦ Consultar el Reloj ✦';
+    btn.disabled = false;
+  }
 }
 
 async function generatePremiumReading() {
@@ -267,17 +304,38 @@ async function generatePremiumReading() {
     return;
   }
 
-  const bDate = new Date(birthDate);
-  const sunSign = { name: 'Virgo', symbol: '♍' };
-  const moonSign = { name: 'Luna', symbol: '☽' };
-
-  premiumData = { birthDate, sunSign, moonSign };
-
-  const amuletSVG = generateAmuletSVG({ sunSign, moonSign });
-  document.getElementById('amuletContainer').innerHTML = amuletSVG;
+  // Preparamos la interfaz mientras la IA piensa
+  document.getElementById('formErrorPrem').classList.add('hidden');
+  document.getElementById('readingContentPrem').innerHTML = '<p style="color: #c9a84c; text-align: center;">Consultando los astros...</p>';
   document.getElementById('premiumResults').classList.remove('hidden');
-  document.getElementById('paymentSection').classList.remove('hidden');
-  document.getElementById('readingContentPrem').innerHTML = '<p style="color: #c9a84c;">Tu carta astral está lista. Descarga tu PDF abajo.</p>';
+  document.getElementById('paymentSection').classList.add('hidden');
+
+  try {
+    // Usamos tu puente seguro en Vercel
+    const response = await fetch('/api/consultar-reloj', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fechaNacimiento: birthDate })
+    });
+
+    const data = await response.json();
+    const textoAstrologico = data.content && data.content[0] ? data.content[0].text : "Los astros se han alineado.";
+
+    // Generamos el amuleto
+    const sunSign = { name: 'Sol', symbol: '☉' };
+    const moonSign = { name: 'Luna', symbol: '☽' };
+    premiumData = { birthDate, sunSign, moonSign, lectura: textoAstrologico };
+
+    const amuletSVG = generateAmuletSVG({ sunSign, moonSign });
+    document.getElementById('amuletContainer').innerHTML = amuletSVG;
+    document.getElementById('paymentSection').classList.remove('hidden');
+    
+    // Mostramos la lectura Premium
+    document.getElementById('readingContentPrem').innerHTML = `<p style="color: #e8e0f0; font-size: 0.95rem; line-height: 1.7; padding: 15px;">${textoAstrologico.replace(/\n/g, '<br>')}</p>`;
+
+  } catch (error) {
+    document.getElementById('readingContentPrem').innerHTML = '<p style="color: #c47a8f; text-align: center;">El velo está cerrado. Intenta de nuevo.</p>';
+  }
 }
 
 function downloadPDF() {
