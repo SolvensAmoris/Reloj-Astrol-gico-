@@ -8,310 +8,112 @@
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap');
 
   :root {
-    --void: #0a0810;
-    --deep: #110f1a;
-    --veil: #1c1828;
-    --gold: #c9a84c;
-    --gold-dim: #7a6330;
-    --silver: #b8c4d4;
-    --lavender: #9b8fc4;
-    --rose: #c47a8f;
-    --teal: #5ab4a8;
-    --ophiuchus: #6dbf8a;
-    --text: #e8e0f0;
-    --muted: #7a7090;
+    --void: #0a0810; --deep: #110f1a; --veil: #1c1828;
+    --gold: #c9a84c; --gold-dim: #7a6330; --silver: #b8c4d4;
+    --lavender: #9b8fc4; --rose: #c47a8f; --teal: #5ab4a8;
+    --ophiuchus: #6dbf8a; --text: #e8e0f0; --muted: #7a7090;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--void);
-    color: var(--text);
-    font-family: 'Raleway', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-    overflow-x: hidden;
+    background: var(--void); color: var(--text);
+    font-family: 'Raleway', sans-serif; font-weight: 300;
+    min-height: 100vh; overflow-x: hidden;
   }
 
-  #stars {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none; z-index: 0;
-  }
-  .star {
-    position: absolute; background: white; border-radius: 50%;
-    animation: twinkle var(--d, 3s) ease-in-out infinite;
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: var(--min, 0.2); }
-    50% { opacity: var(--max, 0.9); }
-  }
+  #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d, 3s) ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: var(--min, 0.2); } 50% { opacity: var(--max, 0.9); } }
 
-  .app {
-    position: relative; z-index: 1;
-    max-width: 880px; margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
+  .app { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 40px 20px 80px; }
 
   header { text-align: center; margin-bottom: 40px; }
 
-  .zodiac-wheel {
-    width: 120px; height: 120px;
-    margin: 0 auto 22px;
-    position: relative;
-  }
-  .zodiac-wheel svg {
-    width: 100%; height: 100%;
-    filter: drop-shadow(0 0 12px rgba(201,168,76,0.35));
-  }
+  .zodiac-wheel { width: 120px; height: 120px; margin: 0 auto 22px; position: relative; }
+  .zodiac-wheel svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(201,168,76,0.35)); }
   .wheel-outer { animation: rotate 90s linear infinite; transform-origin: 60px 60px; }
   .wheel-mid   { animation: rotate 45s linear infinite reverse; transform-origin: 60px 60px; }
   .wheel-inner { animation: rotate 20s linear infinite; transform-origin: 60px 60px; }
   @keyframes rotate { to { transform: rotate(360deg); } }
 
-  h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.9rem, 5vw, 2.9rem);
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    line-height: 1.1;
-  }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 5vw, 2.9rem); font-weight: 300; letter-spacing: 0.12em; color: var(--gold); line-height: 1.1; }
+  .subtitle { font-size: 0.75rem; letter-spacing: 0.3em; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
+  .author-line { font-size: 0.7rem; letter-spacing: 0.22em; color: var(--gold-dim); margin-top: 5px; text-transform: uppercase; }
 
-  .subtitle {
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    color: var(--muted);
-    margin-top: 6px;
-    text-transform: uppercase;
-  }
+  .date-block { margin-top: 20px; background: var(--deep); border: 1px solid rgba(201,168,76,0.18); border-radius: 14px; padding: 18px 24px; display: inline-block; text-align: center; }
+  .date-gregorian { font-size: 0.72rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .date-planetary { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--gold); letter-spacing: 0.06em; }
+  .date-zodiacal { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--lavender); margin-top: 4px; }
+  .date-ophiuchus { color: var(--ophiuchus) !important; }
 
-  .author-line {
-    font-size: 0.7rem;
-    letter-spacing: 0.22em;
-    color: var(--gold-dim);
-    margin-top: 5px;
-    text-transform: uppercase;
-  }
-
-  .date-block {
-    margin-top: 20px;
-    background: var(--deep);
-    border: 1px solid rgba(201,168,76,0.18);
-    border-radius: 14px;
-    padding: 18px 24px;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .date-gregorian {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .date-planetary {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    color: var(--gold);
-    letter-spacing: 0.06em;
-  }
-
-  .date-zodiacal {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--lavender);
-    margin-top: 4px;
-  }
-
-  .date-ophiuchus {
-    color: var(--ophiuchus) !important;
-  }
-
-  .cal-info {
-    background: var(--deep);
-    border: 1px solid rgba(107,191,138,0.15);
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin: 18px 0 28px;
-    font-size: 0.8rem;
-    color: var(--muted);
-    line-height: 1.7;
-    text-align: center;
-  }
+  .cal-info { background: var(--deep); border: 1px solid rgba(107,191,138,0.15); border-radius: 10px; padding: 14px 18px; margin: 18px 0 28px; font-size: 0.8rem; color: var(--muted); line-height: 1.7; text-align: center; }
   .cal-info strong { color: var(--ophiuchus); font-weight: 400; letter-spacing: 0.05em; }
 
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 28px 0;
-    color: var(--gold-dim);
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .divider::before, .divider::after {
-    content: ''; flex: 1;
-    height: 1px; background: var(--gold-dim); opacity: 0.35;
-  }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 28px 0; color: var(--gold-dim); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-dim); opacity: 0.35; }
 
-  .card {
-    background: var(--deep);
-    border: 1px solid rgba(201,168,76,0.15);
-    border-radius: 12px;
-    padding: 26px;
-    margin-bottom: 22px;
-  }
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.18rem;
-    color: var(--gold);
-    margin-bottom: 16px;
-    letter-spacing: 0.06em;
-  }
+  .card { background: var(--deep); border: 1px solid rgba(201,168,76,0.15); border-radius: 12px; padding: 26px; margin-bottom: 22px; }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.18rem; color: var(--gold); margin-bottom: 16px; letter-spacing: 0.06em; }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px; margin-bottom: 14px;
-  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
 
-  label {
-    font-size: 0.68rem; letter-spacing: 0.2em;
-    color: var(--muted); text-transform: uppercase;
-    display: block; margin-bottom: 6px;
-  }
-
-  input, select {
-    width: 100%;
-    background: var(--veil);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.9rem;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+  label { font-size: 0.68rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
+  input, select { width: 100%; background: var(--veil); border: 1px solid rgba(201,168,76,0.2); border-radius: 6px; color: var(--text); font-family: 'Raleway', sans-serif; font-size: 0.9rem; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
   input:focus, select:focus { border-color: var(--gold-dim); }
-  select option { background: var(--deep); }
 
-  .btn {
-    width: 100%; margin-top: 16px; padding: 13px;
-    background: transparent;
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    color: var(--gold);
-    font-family: 'Raleway', sans-serif;
-    font-size: 0.82rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.25s;
-  }
-  .btn:hover {
-    background: rgba(201,168,76,0.08);
-    box-shadow: 0 0 20px rgba(201,168,76,0.15);
-  }
+  .btn { width: 100%; margin-top: 16px; padding: 13px; background: transparent; border: 1px solid var(--gold); border-radius: 8px; color: var(--gold); font-family: 'Raleway', sans-serif; font-size: 0.82rem; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .btn:hover { background: rgba(201,168,76,0.08); box-shadow: 0 0 20px rgba(201,168,76,0.15); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .moon-banner {
-    background: linear-gradient(135deg, var(--deep), var(--veil));
-    border: 1px solid rgba(184,196,212,0.2);
+  /* Banner de upgrade a Premium */
+  .upgrade-banner {
+    background: linear-gradient(135deg, rgba(74,222,128,0.06), rgba(201,168,76,0.06));
+    border: 1px solid rgba(74,222,128,0.3);
     border-radius: 12px;
-    padding: 18px 22px;
-    display: flex; align-items: center; gap: 16px;
-    margin-bottom: 22px;
+    padding: 22px 26px;
+    margin: 24px 0;
+    text-align: center;
   }
+  .upgrade-banner h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #4ade80; margin-bottom: 8px; }
+  .upgrade-banner p { font-size: 0.83rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+  .btn-premium { display: inline-block; padding: 12px 32px; border: 1px solid #4ade80; border-radius: 8px; color: #4ade80; font-family: 'Raleway', sans-serif; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.25s; background: transparent; }
+  .btn-premium:hover { background: rgba(74,222,128,0.1); box-shadow: 0 0 20px rgba(74,222,128,0.2); }
+
+  .moon-banner { background: linear-gradient(135deg, var(--deep), var(--veil)); border: 1px solid rgba(184,196,212,0.2); border-radius: 12px; padding: 18px 22px; display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
   .moon-symbol { font-size: 2.6rem; }
-  .moon-info h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.08rem; color: var(--silver);
-  }
+  .moon-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; color: var(--silver); }
   .moon-info p { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
 
-  .planets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 11px; margin-bottom: 22px;
-  }
-  .planet-card {
-    background: var(--deep);
-    border: 1px solid rgba(201,168,76,0.12);
-    border-radius: 10px;
-    padding: 15px; text-align: center;
-    transition: border-color 0.2s;
-  }
+  .planets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 11px; margin-bottom: 22px; }
+  .planet-card { background: var(--deep); border: 1px solid rgba(201,168,76,0.12); border-radius: 10px; padding: 15px; text-align: center; transition: border-color 0.2s; }
   .planet-card:hover { border-color: rgba(201,168,76,0.35); }
   .planet-card.ophiuchus-card { border-color: rgba(107,191,138,0.2); }
   .planet-card.ophiuchus-card:hover { border-color: rgba(107,191,138,0.5); }
-
   .planet-symbol { font-size: 1.75rem; display: block; margin-bottom: 5px; }
-  .planet-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.93rem; color: var(--gold); letter-spacing: 0.05em;
-  }
+  .planet-name { font-family: 'Cormorant Garamond', serif; font-size: 0.93rem; color: var(--gold); letter-spacing: 0.05em; }
   .planet-sign { font-size: 0.78rem; color: var(--lavender); margin-top: 2px; }
   .planet-sign.oph-sign { color: var(--ophiuchus); }
   .planet-house { font-size: 0.7rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.08em; }
 
-  .reading-box {
-    background: var(--deep);
-    border: 1px solid rgba(155,143,196,0.2);
-    border-radius: 12px;
-    padding: 26px; margin-bottom: 22px;
-  }
+  .reading-box { background: var(--deep); border: 1px solid rgba(155,143,196,0.2); border-radius: 12px; padding: 26px; margin-bottom: 22px; }
   .reading-box .card-title { color: var(--lavender); }
-  .reading-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.06rem; line-height: 1.85;
-    color: var(--text); font-weight: 300;
-  }
+  .reading-text { font-family: 'Cormorant Garamond', serif; font-size: 1.06rem; line-height: 1.85; color: var(--text); font-weight: 300; }
   .reading-text p { margin-bottom: 14px; }
   .reading-text p:last-child { margin-bottom: 0; }
 
-  .loading {
-    text-align: center; padding: 30px;
-    color: var(--muted); font-size: 0.82rem; letter-spacing: 0.2em;
-  }
-  .orb {
-    width: 38px; height: 38px;
-    border: 2px solid var(--gold-dim);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 12px;
-  }
+  .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 0.82rem; letter-spacing: 0.2em; }
+  .orb { width: 38px; height: 38px; border: 2px solid var(--gold-dim); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .natal-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .chip {
-    background: rgba(201,168,76,0.08);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 20px; padding: 4px 13px;
-    font-size: 0.76rem; color: var(--gold);
-  }
+  .chip { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 20px; padding: 4px 13px; font-size: 0.76rem; color: var(--gold); }
 
-  .error-msg {
-    color: var(--rose); font-size: 0.83rem; padding: 11px;
-    border: 1px solid rgba(196,122,143,0.3);
-    border-radius: 8px; margin-top: 12px; text-align: center;
-  }
-
+  .error-msg { color: var(--rose); font-size: 0.83rem; padding: 11px; border: 1px solid rgba(196,122,143,0.3); border-radius: 8px; margin-top: 12px; text-align: center; }
   .hidden { display: none; }
 
-  footer {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-  }
+  footer { text-align: center; margin-top: 50px; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--gold-dim); text-transform: uppercase; }
   footer span { color: var(--muted); }
 </style>
 </head>
@@ -326,7 +128,7 @@
         <circle cx="60" cy="60" r="57" fill="none" stroke="#7a6330" stroke-width="0.6"/>
         <circle cx="60" cy="60" r="50" fill="none" stroke="#c9a84c" stroke-width="0.8"/>
         <g class="wheel-outer" fill="#c9a84c" font-size="7" font-family="serif" text-anchor="middle" dominant-baseline="central">
-          <text transform="rotate(0,60,60)   translate(60,10)">♈</text>
+          <text transform="rotate(0,60,60)    translate(60,10)">♈</text>
           <text transform="rotate(27.7,60,60) translate(60,10)">♉</text>
           <text transform="rotate(55.4,60,60) translate(60,10)">♊</text>
           <text transform="rotate(83.1,60,60) translate(60,10)">♋</text>
@@ -375,7 +177,6 @@
     Este reloj usa el <strong>Calendario Zodiacal de 13 Meses</strong>: cada mes corresponde a un signo solar,
     iniciando en <strong>Aries</strong> (equinoccio de primavera, ~21 marzo).
     Cada mes tiene <strong>28 días exactos</strong>. El día sobrante es el <strong>Día Fuera del Tiempo</strong>.
-    Los días de la semana conservan su nombre planetario original.
     <strong>⛎ Ofiuco</strong> ocupa su lugar astronómico entre Escorpio y Sagitario (30 nov – 17 dic).
   </div>
 
@@ -427,10 +228,17 @@
 
     <div class="divider">Lectura del Cielo</div>
     <div class="reading-box">
-      <div class="card-title">☽ Interpretación Astrológica</div>
+      <div class="card-title">☽ Interpretación Astrológica · Lectura Diaria</div>
       <div id="readingContent">
         <div class="loading"><div class="orb"></div>Consultando el Reloj…</div>
       </div>
+    </div>
+
+    <!-- Banner de upgrade visible después de la lectura gratuita -->
+    <div class="upgrade-banner" id="upgradeBanner" style="display:none;">
+      <h3>👑 Desbloquea tu Carta Astral Completa</h3>
+      <p>Recibe un análisis profundo de todos tus planetas, tu amuleto personalizado<br>y un PDF descargable con tu carta completa.</p>
+      <a class="btn-premium" href="pro.html">✦ Ver Carta Astral Pro · $3 USD ✦</a>
     </div>
 
   </div>
@@ -466,28 +274,19 @@ const PLANETARY_DAYS = [
 
 // ─── 13-Sign Zodiacal Calendar ────────────────────────────────────────────────
 const ZODIAC_13 = [
-  { name: 'Aries',       symbol: '♈', start: [3,21], days: 28, color: '#c47060' },
-  { name: 'Tauro',       symbol: '♉', start: [4,18], days: 28, color: '#c4b090' },
-  { name: 'Géminis',     symbol: '♊', start: [5,16], days: 28, color: '#b8c4d4' },
-  { name: 'Cáncer',      symbol: '♋', start: [6,13], days: 28, color: '#9b8fc4' },
-  { name: 'Leo',         symbol: '♌', start: [7,11], days: 28, color: '#f0c040' },
-  { name: 'Virgo',       symbol: '♍', start: [8,8],  days: 28, color: '#5ab4a8' },
-  { name: 'Libra',       symbol: '♎', start: [9,5],  days: 28, color: '#c47a8f' },
-  { name: 'Escorpio',    symbol: '♏', start: [10,3], days: 28, color: '#7a4060' },
-  { name: 'Ofiuco',      symbol: '⛎', start: [10,31],days: 18, color: '#6dbf8a', ophiuchus: true },
-  { name: 'Sagitario',   symbol: '♐', start: [11,18],days: 28, color: '#c9a84c' },
-  { name: 'Capricornio', symbol: '♑', start: [12,16],days: 28, color: '#7090b0' },
-  { name: 'Acuario',     symbol: '♒', start: [1,13], days: 28, color: '#5070c0' },
-  { name: 'Piscis',      symbol: '♓', start: [2,10], days: 28, color: '#8070c0' },
-];
-
-const SIGNS_12 = [
-  {name:'Aries',symbol:'♈'},{name:'Tauro',symbol:'♉'},
-  {name:'Géminis',symbol:'♊'},{name:'Cáncer',symbol:'♋'},
-  {name:'Leo',symbol:'♌'},{name:'Virgo',symbol:'♍'},
-  {name:'Libra',symbol:'♎'},{name:'Escorpio',symbol:'♏'},
-  {name:'Sagitario',symbol:'♐'},{name:'Capricornio',symbol:'♑'},
-  {name:'Acuario',symbol:'♒'},{name:'Piscis',symbol:'♓'}
+  { name: 'Aries',       symbol: '♈', start: [3,21],  days: 28, color: '#c47060' },
+  { name: 'Tauro',       symbol: '♉', start: [4,18],  days: 28, color: '#c4b090' },
+  { name: 'Géminis',     symbol: '♊', start: [5,16],  days: 28, color: '#b8c4d4' },
+  { name: 'Cáncer',      symbol: '♋', start: [6,13],  days: 28, color: '#9b8fc4' },
+  { name: 'Leo',         symbol: '♌', start: [7,11],  days: 28, color: '#f0c040' },
+  { name: 'Virgo',       symbol: '♍', start: [8,8],   days: 28, color: '#5ab4a8' },
+  { name: 'Libra',       symbol: '♎', start: [9,5],   days: 28, color: '#c47a8f' },
+  { name: 'Escorpio',    symbol: '♏', start: [10,3],  days: 28, color: '#7a4060' },
+  { name: 'Ofiuco',      symbol: '⛎', start: [10,31], days: 18, color: '#6dbf8a', ophiuchus: true },
+  { name: 'Sagitario',   symbol: '♐', start: [11,18], days: 28, color: '#c9a84c' },
+  { name: 'Capricornio', symbol: '♑', start: [12,16], days: 28, color: '#7090b0' },
+  { name: 'Acuario',     symbol: '♒', start: [1,13],  days: 28, color: '#5070c0' },
+  { name: 'Piscis',      symbol: '♓', start: [2,10],  days: 28, color: '#8070c0' },
 ];
 
 function longitudeToSign13(lon) {
@@ -508,16 +307,11 @@ function getZodiacalDate(gdate) {
   }
   thresholds.push({ date: new Date(year + 1, 2, 21), idx: 0 });
   thresholds.sort((a, b) => a.date - b.date);
-
   for (let i = thresholds.length - 1; i >= 0; i--) {
     if (gdate >= thresholds[i].date) {
       const sign = ZODIAC_13[thresholds[i].idx];
       const diffDays = Math.floor((gdate - thresholds[i].date) / 86400000) + 1;
-      if (diffDays <= sign.days) {
-        return { sign, day: diffDays };
-      } else {
-        return { sign, day: diffDays, outsideTime: true };
-      }
+      return { sign, day: diffDays, outsideTime: diffDays > sign.days };
     }
   }
   return { sign: ZODIAC_13[12], day: 1 };
@@ -526,24 +320,19 @@ function getZodiacalDate(gdate) {
 const now = new Date();
 const pd = PLANETARY_DAYS[now.getDay()];
 const zd = getZodiacalDate(now);
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
 document.getElementById('datePlanetary').textContent =
-  `${pd.symbol} Día de ${pd.planet} (${pd.es}), ${now.getDate()} de ${
-    ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][now.getMonth()]
-  } de ${now.getFullYear()}`;
+  `${pd.symbol} Día de ${pd.planet} (${pd.es}), ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
 
-const zdLabel = zd.outsideTime
-  ? `✦ Día Fuera del Tiempo ✦`
+const zdLabel = zd.outsideTime ? `✦ Día Fuera del Tiempo ✦`
   : `${zd.sign.symbol} Día ${zd.day} de ${zd.sign.name}${zd.sign.ophiuchus ? ' ⛎' : ''}`;
-
 const zdEl = document.getElementById('dateZodiacal');
 zdEl.textContent = zdLabel;
 if (zd.sign.ophiuchus) zdEl.classList.add('date-ophiuchus');
 
 // ─── Astronomy ────────────────────────────────────────────────────────────────
-function daysSinceJ2000(date) {
-  return (date - new Date('2000-01-01T12:00:00Z')) / 86400000;
-}
+function daysSinceJ2000(date) { return (date - new Date('2000-01-01T12:00:00Z')) / 86400000; }
 function norm360(a) { return ((a % 360) + 360) % 360; }
 
 function getPlanetaryPositions(date) {
@@ -596,12 +385,12 @@ function getSunSign13(month, day) {
   for (let i = ZODIAC_13.length - 1; i >= 0; i--) {
     const [sm, sd] = ZODIAC_13[i].start;
     if (sm > 2 && (month > sm || (month === sm && day >= sd))) return ZODIAC_13[i];
-    if (sm <= 2 && (month < 3) && (month > sm || (month === sm && day >= sd))) return ZODIAC_13[i];
+    if (sm <= 2 && month < 3 && (month > sm || (month === sm && day >= sd))) return ZODIAC_13[i];
   }
   return ZODIAC_13[12];
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
+// ─── Render planets ───────────────────────────────────────────────────────────
 function renderPlanets(positions, houseOf) {
   const grid = document.getElementById('planetsGrid');
   grid.innerHTML = '';
@@ -622,45 +411,53 @@ function renderPlanets(positions, houseOf) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 async function generateReading() {
-  const birthDate = document.getElementById('birthDate').value;
-  const birthTime = document.getElementById('birthTime').value;
-  const birthCity = document.getElementById('birthCity').value.trim();
+  const birthDate  = document.getElementById('birthDate').value;
+  const birthTime  = document.getElementById('birthTime').value;
+  const birthCity  = document.getElementById('birthCity').value.trim();
   const birthCountry = document.getElementById('birthCountry').value.trim();
   const errEl = document.getElementById('formError');
 
   if (!birthDate) {
     errEl.textContent = 'Por favor ingresa tu fecha de nacimiento.';
-    errEl.classList.remove('hidden'); return;
+    errEl.classList.remove('hidden');
+    return;
   }
   errEl.classList.add('hidden');
-  document.getElementById('readBtn').disabled = true;
+
+  const btn = document.getElementById('readBtn');
+  btn.disabled = true;
+  btn.textContent = '✦ Consultando el Reloj… ✦';
+
   document.getElementById('results').classList.remove('hidden');
+  document.getElementById('upgradeBanner').style.display = 'none';
   document.getElementById('readingContent').innerHTML =
     `<div class="loading"><div class="orb"></div>El Reloj Astrológico está girando…</div>`;
 
   const today = new Date();
   const positions = getPlanetaryPositions(today);
 
-  const moon = getMoonPhase(today);
+  // Fase lunar
+  const moon    = getMoonPhase(today);
   const moonPos = positions.find(p => p.name === 'Luna');
   document.getElementById('moonSymbol').textContent = moon.symbol;
-  document.getElementById('moonTitle').textContent = `${moon.name} en ${moonPos.sign.name}`;
-  document.getElementById('moonDesc').textContent = `Fase: ${moon.name} · ${moon.pct}% iluminada`;
+  document.getElementById('moonTitle').textContent  = `${moon.name} en ${moonPos.sign.name}`;
+  document.getElementById('moonDesc').textContent   = `Fase: ${moon.name} · ${moon.pct}% iluminada`;
 
+  // Planetas con casas
   const [bHour, bMin] = birthTime.split(':').map(Number);
-  const bDate = new Date(birthDate);
+  const bDate   = new Date(birthDate);
   const houseOf = getHouses(bDate, bHour + bMin / 60);
   renderPlanets(positions, houseOf);
 
-  // Natal
-  const bMon = bDate.getMonth() + 1;
-  const bDay = bDate.getDate();
+  // Firma natal
+  const bMon          = bDate.getMonth() + 1;
+  const bDay          = bDate.getDate();
   const natalPositions = getPlanetaryPositions(bDate);
-  const sunSign = getSunSign13(bMon, bDay);
-  const natalMoon = natalPositions.find(p => p.name === 'Luna');
-  const natalMerc = natalPositions.find(p => p.name === 'Mercurio');
-  const natalVenus = natalPositions.find(p => p.name === 'Venus');
-  const natalZd = getZodiacalDate(bDate);
+  const sunSign       = getSunSign13(bMon, bDay);
+  const natalMoon     = natalPositions.find(p => p.name === 'Luna');
+  const natalMerc     = natalPositions.find(p => p.name === 'Mercurio');
+  const natalVenus    = natalPositions.find(p => p.name === 'Venus');
+  const natalZd       = getZodiacalDate(bDate);
 
   const chips = [
     `☉ Sol en ${sunSign.name}${sunSign.ophiuchus ? ' ⛎' : ''}`,
@@ -673,68 +470,67 @@ async function generateReading() {
     chips.map(c => `<span class="chip">${c}</span>`).join('');
   document.getElementById('natalSummary').classList.remove('hidden');
 
-  // Prompt
+  // Prompt para la lectura GRATUITA (concisa, deja con ganas de más)
   const todayPd = PLANETARY_DAYS[today.getDay()];
   const todayZd = getZodiacalDate(today);
   const planetSummary = positions.map(p =>
     `${p.name} en ${p.sign.name}${p.sign.ophiuchus ? ' (Ofiuco)' : ''} ${p.degree}°, Casa ${houseOf(p.longitude)}`
   ).join('; ');
 
-  const prompt = `Eres un astrólogo experto en astrología occidental con el zodíaco de 13 signos que incluye a Ofiuco (el portador de la serpiente, entre Escorpio y Sagitario).
+  const prompt = `Eres un astrólogo experto en el zodíaco de 13 signos que incluye a Ofiuco (entre Escorpio y Sagitario).
 
-HOY EN EL RELOJ ASTROLÓGICO:
-- Día gregoriano: ${todayPd.es}, ${today.getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][today.getMonth()]} de ${today.getFullYear()}
+HOY:
+- Día gregoriano: ${todayPd.es}, ${today.getDate()} de ${MESES[today.getMonth()]} de ${today.getFullYear()}
 - Día planetario: Día de ${todayPd.planet} ${todayPd.symbol}
 - Fecha zodiacal: Día ${todayZd.day} de ${todayZd.sign.name} ${todayZd.sign.symbol}
 - Fase lunar: ${moon.name} en ${moonPos.sign.name}
 
-POSICIONES PLANETARIAS (zodíaco 13 signos):
+POSICIONES PLANETARIAS HOY:
 ${planetSummary}
 
-CARTA NATAL DEL CONSULTANTE (zodíaco 13 signos):
-- Sol natal: ${sunSign.name}${sunSign.ophiuchus ? ' (Ofiuco — portador de la serpiente, sanador, chamán del zodíaco)' : ''}
+CARTA NATAL:
+- Sol natal: ${sunSign.name}${sunSign.ophiuchus ? ' (Ofiuco — sanador, chamán)' : ''}
 - Luna natal: ${natalMoon.sign.name}
 - Mercurio natal: ${natalMerc.sign.name}
 - Venus natal: ${natalVenus.sign.name}
 - Fecha zodiacal de nacimiento: Día ${natalZd.day} de ${natalZd.sign.name}
-- Lugar de nacimiento: ${birthCity || 'no especificado'}, ${birthCountry || 'no especificado'}
-- Hora de nacimiento: ${birthTime}
+- Lugar: ${birthCity || 'no especificado'}, ${birthCountry || 'no especificado'}
+- Hora: ${birthTime}
 
-Redacta una lectura astrológica del día de hoy para esta persona usando el sistema de 13 signos. En 4-5 párrafos poéticos pero concretos:
-1. La energía del Día de ${todayPd.planet} y qué activa en su carta natal
-2. Cómo el cielo de hoy transita sus signos natales (menciona Ofiuco si es relevante)
-3. La fase lunar y su influencia
-4. Las energías del mes zodiacal actual (${todayZd.sign.name}) y qué trabajar hoy
-5. Una recomendación práctica y específica
+Redacta una lectura astrológica DIARIA BREVE para esta persona. Solo 2 párrafos poéticos pero concretos:
+1. La energía del día y qué activa en tu carta natal
+2. Una sola recomendación práctica y específica para hoy
 
-Escribe en español, segunda persona (tú), voz cálida y sabia. Sin asteriscos ni markdown. Sin bullets. Solo párrafos fluidos.`;
+Escribe en español, segunda persona (tú), voz cálida y sabia. Sin asteriscos, sin markdown, sin bullets. Solo párrafos fluidos. Sé evocador pero conciso — esta es la lectura gratuita, no la carta completa.`;
 
-        try {
+  try {
     const res = await fetch('/api/consultar-reloj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: prompt })
+      body: JSON.stringify({ prompt }),
     });
-      
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
     const data = await res.json();
-    
-    // AQUÍ ESTÁ EL CAMBIO: Vamos a ver si hay texto o si hay un error
-    if (data.content && data.content[0] && data.content[0].text) {
-        const text = data.content[0].text;
-        const html = text.trim().split(/\n+/).map(p => `<p>${p.trim()}</p>`).join('');
-        document.getElementById('readingContent').innerHTML = `<div class="reading-text">${html}</div>`;
+    const text = data.content?.[0]?.text;
+
+    if (text) {
+      const html = text.trim().split(/\n+/).map(p => `<p>${p.trim()}</p>`).join('');
+      document.getElementById('readingContent').innerHTML = `<div class="reading-text">${html}</div>`;
+      // Mostrar banner de upgrade después de la lectura
+      document.getElementById('upgradeBanner').style.display = 'block';
     } else {
-        // Si no hay contenido, mostramos el error que envía Anthropic
-        document.getElementById('readingContent').innerHTML = 
-            `<div class="error-msg">Error: ${JSON.stringify(data)}</div>`;
+      throw new Error('Respuesta vacía');
     }
+
   } catch (err) {
     document.getElementById('readingContent').innerHTML =
-      `<div class="error-msg">No se pudo obtener la lectura. Error: ${err.message}</div>`;
+      `<div class="error-msg">No se pudo obtener la lectura. Por favor intenta de nuevo.<br><small>${err.message}</small></div>`;
   }
 
-
-  document.getElementById('readBtn').disabled = false;
+  btn.disabled = false;
+  btn.textContent = '✦ Consultar el Reloj Astrológico ✦';
 }
 </script>
 </body>
