@@ -1,36 +1,32 @@
 export default async function handler(req, res) {
-  // Asegurar que solo acepte peticiones POST desde tu frontend
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
   try {
-    // Recibir los datos de nacimiento enviados por el usuario
-    const { fechaNacimiento } = req.body;
+    // Ahora recibimos el "prompt" completo con toda la lectura planetaria
+    const { prompt } = req.body;
 
-    // Hacer la llamada segura a Anthropic desde el servidor
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY, // Tu clave estará protegida aquí
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01' 
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022', // Modelo de la IA
-        max_tokens: 2000,
+        model: 'claude-3-5-sonnet-20241022', // Usamos el modelo oficial correcto
+        max_tokens: 1500,
         messages: [
           { 
             role: 'user', 
-            content: `Actúa como un motor astrológico experto en el zodíaco de 13 signos. Calcula la firma natal y posición planetaria para alguien nacido el: ${fechaNacimiento}.` 
+            content: prompt // Le pasamos a la IA exactamente lo que tu HTML calculó
           }
         ]
       })
     });
 
     const data = await response.json();
-    
-    // Devolver la respuesta de la IA de vuelta a tu página web
     return res.status(200).json(data);
 
   } catch (error) {
