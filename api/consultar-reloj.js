@@ -5,26 +5,38 @@ export default async function handler(req, res) {
   const API_KEY = process.env.GEMINI_API_KEY;
   
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+    // Usamos gemini-1.5-pro para una lectura de alta calidad
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
+        contents: [{ parts: [{ text: prompt }] }],
+        // Configuramos la creatividad: 0.7 es ideal para textos astrológicos/poéticos
+        generationConfig: {
+          temperature: 0.7,
+        }
       })
     });
 
     const data = await response.json();
 
-    // Nueva lógica de validación para evitar el error 'undefined'
     if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
       const text = data.candidates[0].content.parts[0].text;
       return res.status(200).json({ content: [{ text: text }] });
     } else {
-      // Si Gemini devuelve un error, lo pasamos al frontend
-      return res.status(200).json({ content: [{ text: "Error de formato en respuesta de AI: " + JSON.stringify(data) }] });
+      // Mensaje elegante para el cliente final en caso de error
+      return res.status(200).json({ 
+        content: [{ text: "Las estrellas están configurándose en este momento. Por favor, intenta consultar tu reloj astrológico nuevamente en unos instantes." }] 
+      });
     }
     
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    // Error silencioso para el usuario, logueado en servidor
+    console.error("API Error:", error);
+    return res.status(500).json({ 
+      content: [{ text: "Ha ocurrido un error en la conexión con el cosmos. Intenta nuevamente." }] 
+    });
   }
 }
