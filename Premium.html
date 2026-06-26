@@ -3,82 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reloj Astrológico Pro · Solvens Amoris</title>
+<title>Carta Astral Pro · Solvens Amoris</title>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap');
   :root {
-    --void: #0a0810; --deep: #110f1a; --veil: #1c1828; --gold: #c9a84c;
-    --gold-dim: #7a6330; --silver: #b8c4d4; --lavender: #9b8fc4; --rose: #c47a8f;
-    --teal: #5ab4a8; --ophiuchus: #6dbf8a; --text: #e8e0f0; --muted: #7a7090; --green: #4ade80;
+    --void: #0a0810; --deep: #110f1a; --veil: #1c1828;
+    --gold: #c9a84c; --gold-dim: #7a6330; --silver: #b8c4d4;
+    --lavender: #9b8fc4; --rose: #c47a8f; --teal: #5ab4a8;
+    --ophiuchus: #6dbf8a; --text: #e8e0f0; --muted: #7a7090;
+    --green: #4ade80; --green-dim: rgba(74,222,128,0.15);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--void); color: var(--text); font-family: 'Raleway', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
   #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d, 3s) ease-in-out infinite; }
-  @keyframes twinkle { 0%, 100% { opacity: var(--min, 0.2); } 50% { opacity: var(--max, 0.9); } }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d,3s) ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:var(--min,0.2)} 50%{opacity:var(--max,0.9)} }
+
   .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
   header { text-align: center; margin-bottom: 40px; }
-  .zodiac-wheel { width: 120px; height: 120px; margin: 0 auto 22px; position: relative; }
-  .zodiac-wheel svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(201,168,76,0.35)); }
+
+  .zodiac-wheel { width: 120px; height: 120px; margin: 0 auto 22px; }
+  .zodiac-wheel svg { width:100%;height:100%;filter:drop-shadow(0 0 12px rgba(201,168,76,0.35)); }
   .wheel-outer { animation: rotate 90s linear infinite; transform-origin: 60px 60px; }
-  .wheel-mid { animation: rotate 45s linear infinite reverse; transform-origin: 60px 60px; }
+  .wheel-mid   { animation: rotate 45s linear infinite reverse; transform-origin: 60px 60px; }
   .wheel-inner { animation: rotate 20s linear infinite; transform-origin: 60px 60px; }
   @keyframes rotate { to { transform: rotate(360deg); } }
-  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 5vw, 2.9rem); font-weight: 300; letter-spacing: 0.12em; color: var(--gold); line-height: 1.1; }
-  .subtitle { font-size: 0.75rem; letter-spacing: 0.3em; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
-  .author-line { font-size: 0.7rem; letter-spacing: 0.22em; color: var(--gold-dim); margin-top: 5px; text-transform: uppercase; }
-  .version-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
-  @media (max-width: 600px) { .version-selector { grid-template-columns: 1fr; } }
-  .version-card { background: var(--deep); border: 2px solid rgba(201,168,76,0.2); border-radius: 14px; padding: 24px; cursor: pointer; transition: all 0.3s; text-align: center; }
-  .version-card:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.2); }
-  .version-card.active { border-color: var(--gold); background: rgba(201,168,76,0.08); }
-  .version-card.premium { border-color: var(--green); }
-  .version-card.premium:hover { box-shadow: 0 0 20px rgba(74,222,128,0.2); }
-  .version-card.premium.active { border-color: var(--green); background: rgba(74,222,128,0.08); }
-  .version-icon { font-size: 2rem; margin-bottom: 8px; }
-  .version-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); margin-bottom: 6px; }
-  .version-card.premium .version-title { color: var(--green); }
-  .version-price { font-size: 1.8rem; font-weight: 600; color: var(--green); margin: 12px 0; }
-  .version-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-  .card { background: var(--deep); border: 1px solid rgba(201,168,76,0.15); border-radius: 12px; padding: 26px; margin-bottom: 22px; }
-  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.18rem; color: var(--gold); margin-bottom: 16px; letter-spacing: 0.06em; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
-  label { font-size: 0.68rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
-  input, select { width: 100%; background: var(--veil); border: 1px solid rgba(201,168,76,0.2); border-radius: 6px; color: var(--text); font-family: 'Raleway', sans-serif; font-size: 0.9rem; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
-  input:focus, select:focus { border-color: var(--gold-dim); }
-  .btn { width: 100%; margin-top: 16px; padding: 13px; background: transparent; border: 1px solid var(--gold); border-radius: 8px; color: var(--gold); font-family: 'Raleway', sans-serif; font-size: 0.82rem; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
-  .btn:hover { background: rgba(201,168,76,0.08); box-shadow: 0 0 20px rgba(201,168,76,0.15); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-primary { border-color: var(--green); color: var(--green); }
-  .btn-primary:hover { background: rgba(74,222,128,0.08); box-shadow: 0 0 20px rgba(74,222,128,0.15); }
-  .amulet-container { margin: 22px 0; text-align: center; }
-  .amulet-svg { width: 200px; height: 200px; margin: 0 auto; border: 2px dashed var(--gold-dim); border-radius: 12px; padding: 16px; }
-  .payment-section { background: var(--deep); border: 2px solid rgba(74,222,128,0.2); border-radius: 12px; padding: 26px; margin-bottom: 22px; }
-  .payment-section .card-title { color: var(--green); }
-  #card-element { border: 1px solid rgba(201,168,76,0.2); border-radius: 6px; padding: 12px; margin: 16px 0; background: var(--veil); }
-  .pdf-section { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
-  .pdf-section button { background: var(--green); color: var(--void); border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 12px; }
-  .pdf-section button:hover { opacity: 0.9; }
-  .error-msg { color: var(--rose); font-size: 0.83rem; padding: 11px; border: 1px solid rgba(196,122,143,0.3); border-radius: 8px; margin-top: 12px; text-align: center; }
-  .success-msg { color: var(--green); font-size: 0.83rem; padding: 11px; border: 1px solid rgba(74,222,128,0.3); border-radius: 8px; margin-top: 12px; text-align: center; }
-  .hidden { display: none; }
-  footer { text-align: center; margin-top: 50px; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--gold-dim); text-transform: uppercase; }
-  footer span { color: var(--muted); }
+
+  h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(1.9rem,5vw,2.9rem); font-weight:300; letter-spacing:0.12em; color:var(--gold); line-height:1.1; }
+  .subtitle { font-size:0.75rem; letter-spacing:0.3em; color:var(--muted); margin-top:6px; text-transform:uppercase; }
+  .author-line { font-size:0.7rem; letter-spacing:0.22em; color:var(--gold-dim); margin-top:5px; text-transform:uppercase; }
+
+  .back-link { display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; letter-spacing:0.2em; color:var(--muted); text-decoration:none; text-transform:uppercase; margin-bottom:28px; transition:color 0.2s; }
+  .back-link:hover { color:var(--gold); }
+
+  .card { background:var(--deep); border:1px solid rgba(201,168,76,0.15); border-radius:12px; padding:26px; margin-bottom:22px; }
+  .card-title { font-family:'Cormorant Garamond',serif; font-size:1.18rem; color:var(--gold); margin-bottom:16px; letter-spacing:0.06em; }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  @media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+  label { font-size:0.68rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:6px; }
+  input,select { width:100%; background:var(--veil); border:1px solid rgba(201,168,76,0.2); border-radius:6px; color:var(--text); font-family:'Raleway',sans-serif; font-size:0.9rem; padding:10px 12px; outline:none; transition:border-color 0.2s; }
+  input:focus,select:focus { border-color:var(--gold-dim); }
+  input[type=text]::placeholder { color: var(--muted); }
+
+  .btn { width:100%; margin-top:16px; padding:13px; background:transparent; border:1px solid var(--gold); border-radius:8px; color:var(--gold); font-family:'Raleway',sans-serif; font-size:0.82rem; letter-spacing:0.25em; text-transform:uppercase; cursor:pointer; transition:all 0.25s; }
+  .btn:hover { background:rgba(201,168,76,0.08); box-shadow:0 0 20px rgba(201,168,76,0.15); }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .btn-green { border-color:var(--green); color:var(--green); }
+  .btn-green:hover { background:rgba(74,222,128,0.08); box-shadow:0 0 20px rgba(74,222,128,0.15); }
+  .btn-green:disabled { opacity:0.4; cursor:not-allowed; }
+
+  .what-you-get { background:var(--deep); border:1px solid rgba(74,222,128,0.2); border-radius:12px; padding:22px 26px; margin-bottom:24px; }
+  .what-you-get h3 { font-family:'Cormorant Garamond',serif; color:var(--green); font-size:1.1rem; margin-bottom:14px; letter-spacing:0.06em; }
+  .feature-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .feature-list li { font-size:0.83rem; color:var(--muted); display:flex; align-items:center; gap:10px; }
+  .feature-list li span.icon { color:var(--green); font-size:1rem; min-width:20px; }
+
+  .price-badge { text-align:center; padding:18px; background:rgba(74,222,128,0.05); border:1px solid rgba(74,222,128,0.25); border-radius:12px; margin-bottom:20px; }
+  .price-badge .amount { font-family:'Cormorant Garamond',serif; font-size:2.8rem; color:var(--green); line-height:1; }
+  .price-badge .currency { font-size:1rem; color:var(--muted); vertical-align:top; margin-top:6px; display:inline-block; }
+  .price-badge .label { font-size:0.75rem; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; margin-top:6px; }
+
+  .divider { display:flex; align-items:center; gap:12px; margin:28px 0; color:var(--gold-dim); font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; }
+  .divider::before,.divider::after { content:'';flex:1;height:1px;background:var(--gold-dim);opacity:0.35; }
+
+  /* Lectura premium */
+  .reading-premium { background:var(--deep); border:1px solid rgba(155,143,196,0.25); border-radius:12px; padding:28px; margin-bottom:22px; }
+  .reading-premium .card-title { color:var(--lavender); font-size:1.3rem; }
+  .reading-text { font-family:'Cormorant Garamond',serif; font-size:1.06rem; line-height:1.9; color:var(--text); font-weight:300; }
+  .reading-text p { margin-bottom:16px; }
+  .reading-text p:last-child { margin-bottom:0; }
+  .reading-section-title { font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:0.95rem; letter-spacing:0.12em; text-transform:uppercase; margin:22px 0 10px; opacity:0.7; }
+
+  /* Amuleto */
+  .amulet-box { text-align:center; margin:24px 0; }
+  .amulet-box h3 { font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:1.1rem; margin-bottom:14px; }
+  .amulet-svg-wrap { display:inline-block; border:1px solid rgba(201,168,76,0.25); border-radius:50%; padding:8px; }
+
+  /* Stripe payment */
+  .payment-box { background:var(--deep); border:2px solid rgba(74,222,128,0.3); border-radius:14px; padding:28px; margin:28px 0; }
+  .payment-box .card-title { color:var(--green); }
+  #card-element { border:1px solid rgba(201,168,76,0.25); border-radius:8px; padding:14px; margin:16px 0; background:var(--veil); }
+  .payment-note { font-size:0.76rem; color:var(--muted); text-align:center; margin-top:10px; letter-spacing:0.05em; }
+  #payment-message { font-size:0.85rem; text-align:center; margin-top:12px; border-radius:8px; padding:10px; }
+  #payment-message.error { color:var(--rose); border:1px solid rgba(196,122,143,0.3); }
+  #payment-message.success { color:var(--green); border:1px solid rgba(74,222,128,0.3); }
+
+  /* Post-pago: PDF */
+  .pdf-unlock { background:rgba(74,222,128,0.07); border:1px solid rgba(74,222,128,0.35); border-radius:12px; padding:24px; text-align:center; margin-top:20px; }
+  .pdf-unlock h3 { font-family:'Cormorant Garamond',serif; color:var(--green); font-size:1.2rem; margin-bottom:8px; }
+  .pdf-unlock p { font-size:0.83rem; color:var(--muted); margin-bottom:16px; }
+  .btn-download { display:inline-block; padding:13px 36px; background:var(--green); color:var(--void); border:none; border-radius:8px; font-family:'Raleway',sans-serif; font-size:0.85rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s; }
+  .btn-download:hover { opacity:0.88; }
+
+  .loading { text-align:center; padding:30px; color:var(--muted); font-size:0.82rem; letter-spacing:0.2em; }
+  .orb { width:38px;height:38px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px; }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .error-msg { color:var(--rose); font-size:0.83rem; padding:11px; border:1px solid rgba(196,122,143,0.3); border-radius:8px; margin-top:12px; text-align:center; }
+  .hidden { display:none; }
+
+  footer { text-align:center; margin-top:50px; font-size:0.68rem; letter-spacing:0.2em; color:var(--gold-dim); text-transform:uppercase; }
+  footer span { color:var(--muted); }
 </style>
 </head>
 <body>
 <div id="stars"></div>
 <div class="app">
+
+  <a class="back-link" href="index.html">← Volver a la lectura gratuita</a>
+
   <header>
     <div class="zodiac-wheel">
       <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
         <circle cx="60" cy="60" r="57" fill="none" stroke="#7a6330" stroke-width="0.6"/>
         <circle cx="60" cy="60" r="50" fill="none" stroke="#c9a84c" stroke-width="0.8"/>
         <g class="wheel-outer" fill="#c9a84c" font-size="7" font-family="serif" text-anchor="middle" dominant-baseline="central">
-          <text transform="rotate(0,60,60) translate(60,10)">♈</text>
+          <text transform="rotate(0,60,60)    translate(60,10)">♈</text>
           <text transform="rotate(27.7,60,60) translate(60,10)">♉</text>
           <text transform="rotate(55.4,60,60) translate(60,10)">♊</text>
           <text transform="rotate(83.1,60,60) translate(60,10)">♋</text>
@@ -94,8 +138,8 @@
         </g>
         <circle cx="60" cy="60" r="38" fill="none" stroke="#7a6330" stroke-width="0.5" stroke-dasharray="2 3"/>
         <g class="wheel-mid" fill="#c9a84c" font-size="6.5" font-family="serif" text-anchor="middle" dominant-baseline="central" opacity="0.75">
-          <text transform="rotate(0,60,60) translate(60,22)">☉</text>
-          <text transform="rotate(51,60,60) translate(60,22)">☽</text>
+          <text transform="rotate(0,60,60)   translate(60,22)">☉</text>
+          <text transform="rotate(51,60,60)  translate(60,22)">☽</text>
           <text transform="rotate(102,60,60) translate(60,22)">☿</text>
           <text transform="rotate(153,60,60) translate(60,22)">♀</text>
           <text transform="rotate(204,60,60) translate(60,22)">♂</text>
@@ -111,28 +155,27 @@
         <circle cx="60" cy="60" r="1.5" fill="#f0e0a0"/>
       </svg>
     </div>
-    <h1>Reloj Astrológico Pro</h1>
-    <p class="subtitle">Zodíaco de 13 Signos · Astrología Occidental</p>
+    <h1>Carta Astral Pro</h1>
+    <p class="subtitle">Zodíaco de 13 Signos · Análisis Completo</p>
     <p class="author-line">por Solvens Amoris</p>
   </header>
 
-  <div class="version-selector">
-    <div class="version-card active" id="freeCard" onclick="selectVersion('free')">
-      <div class="version-icon">✦</div>
-      <div class="version-title">Lectura Diaria</div>
-      <div class="version-price">Gratuito</div>
-      <div class="version-desc">Lectura del día, posiciones planetarias y fase lunar</div>
-    </div>
-    <div class="version-card premium" id="premiumCard" onclick="selectVersion('premium')">
-      <div class="version-icon">👑</div>
-      <div class="version-title">Carta Astral Pro</div>
-      <div class="version-price">$3 USD</div>
-      <div class="version-desc">Carta completa + Amuleto personalizado + PDF descargable</div>
-    </div>
+  <!-- Qué incluye -->
+  <div class="what-you-get">
+    <h3>✦ Tu Carta Astral Completa incluye:</h3>
+    <ul class="feature-list">
+      <li><span class="icon">☉</span> Análisis profundo de todos tus planetas en el zodíaco de 13 signos</li>
+      <li><span class="icon">☽</span> Tu propósito de vida, amor, mente y sombra según tus posiciones natales</li>
+      <li><span class="icon">⛎</span> Influencia de Ofiuco si está presente en tu carta</li>
+      <li><span class="icon">🌙</span> Tránsitos del cielo actual sobre tu carta natal</li>
+      <li><span class="icon">🔮</span> Amuleto astrológico personalizado generado para ti</li>
+      <li><span class="icon">📥</span> PDF descargable con toda tu carta para guardar y compartir</li>
+    </ul>
   </div>
 
-  <div id="freeForm" class="card">
-    <div class="card-title">✦ Tu Carta Natal</div>
+  <!-- Formulario -->
+  <div class="card" id="proForm">
+    <div class="card-title">👑 Tus Datos Natales</div>
     <div class="form-row">
       <div>
         <label>Fecha de nacimiento</label>
@@ -153,202 +196,470 @@
         <input type="text" id="birthCountry" placeholder="ej. México" />
       </div>
     </div>
-    <button class="btn" id="readBtn" onclick="generateReading()">✦ Consultar el Reloj ✦</button>
+    <button class="btn btn-green" id="generateBtn" onclick="generatePremiumReading()">
+      👑 Generar mi Carta Astral Completa ✦
+    </button>
     <div id="formError" class="error-msg hidden"></div>
   </div>
 
-  <div id="premiumForm" class="card hidden">
-    <div class="card-title">👑 Tu Carta Astral Completa</div>
-    <div class="form-row">
-      <div>
-        <label>Fecha de nacimiento</label>
-        <input type="date" id="birthDatePrem" />
-      </div>
-      <div>
-        <label>Hora de nacimiento</label>
-        <input type="time" id="birthTimePrem" value="12:00" />
-      </div>
-    </div>
-    <div class="form-row">
-      <div>
-        <label>Ciudad de nacimiento</label>
-        <input type="text" id="birthCityPrem" placeholder="ej. Ciudad de México" />
-      </div>
-      <div>
-        <label>País</label>
-        <input type="text" id="birthCountryPrem" placeholder="ej. México" />
+  <!-- Resultados (ocultos hasta generar) -->
+  <div id="results" class="hidden">
+
+    <div class="divider">Tu Amuleto Astrológico Personal</div>
+
+    <div class="amulet-box">
+      <h3>Amuleto de tu Firma Natal</h3>
+      <div id="amuletWrap" class="amulet-svg-wrap">
+        <div class="loading"><div class="orb"></div></div>
       </div>
     </div>
-    <button class="btn btn-primary" id="readPremBtn" onclick="generatePremiumReading()">👑 Generar Carta + Amuleto ✦</button>
-    <div id="formErrorPrem" class="error-msg hidden"></div>
+
+    <div class="divider">Carta Astral Completa · Zodíaco 13 Signos</div>
+
+    <div class="reading-premium">
+      <div class="card-title">☽ Tu Carta Astral Personalizada</div>
+      <div id="readingContent">
+        <div class="loading"><div class="orb"></div>Consultando los astros…</div>
+      </div>
+    </div>
+
+    <!-- Sección de pago -->
+    <div class="payment-box" id="paymentBox">
+      <div class="card-title">💳 Descarga tu Carta en PDF · $3 USD</div>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Pago único y seguro. Tu carta generada arriba se descargará en PDF de alta calidad.</p>
+
+      <div class="price-badge">
+        <span class="currency">USD</span>
+        <span class="amount">3</span>
+        <div class="label">Pago único · Acceso inmediato</div>
+      </div>
+
+      <!-- Stripe Card Element -->
+      <div id="card-element"></div>
+      <div id="payment-message" class="hidden"></div>
+
+      <button class="btn btn-green" id="payBtn" onclick="handlePayment()">
+        🔒 Pagar $3 USD y Descargar PDF
+      </button>
+      <p class="payment-note">🔒 Pago procesado con Stripe · Encriptado SSL · No guardamos datos de tarjeta</p>
+    </div>
+
+    <!-- Post-pago: descarga (oculto hasta pago exitoso) -->
+    <div class="pdf-unlock hidden" id="pdfUnlock">
+      <h3>✅ ¡Pago exitoso! Tu carta está lista</h3>
+      <p>Haz clic abajo para descargar tu Carta Astral Completa en PDF.</p>
+      <button class="btn-download" onclick="downloadPDF()">📥 Descargar Carta Astral PDF</button>
+    </div>
+
   </div>
 
-  <div id="premiumResults" class="hidden">
-    <div id="amuletContainer" class="amulet-container"><div class="loading"><div class="orb"></div>Generando amuleto…</div></div>
-    <div id="readingContentPrem"></div>
-    <div id="paymentSection" class="payment-section hidden">
-      <div class="card-title">💳 Descargar Carta + Amuleto (PDF)</div>
-      <p style="font-size: 0.9rem; margin: 12px 0;">Acceso a tu carta astral completa en PDF descargable.</p>
-      <button class="btn btn-primary" onclick="downloadPDF()">📥 Descargar PDF Gratis</button>
-    </div>
-  </div>
-
-  <footer>© 2026 Solvens Amoris · Reloj Astrológico Pro · Todos los derechos reservados</footer>
+  <footer>© 2026 Solvens Amoris · Carta Astral Pro <span>·</span> Todos los derechos reservados</footer>
 </div>
 
 <script>
-let currentVersion = 'free';
-let premiumData = null;
+// ─── CONFIGURACIÓN ─────────────────────────────────────────────────────────────
+// ⚠️  Reemplaza con tu Stripe publishable key (empieza con pk_live_ o pk_test_)
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_TU_CLAVE_PUBLICA_AQUI';
+// ⚠️  El endpoint que crea el PaymentIntent en tu backend Vercel
+const PAYMENT_INTENT_ENDPOINT = '/api/crear-pago';
 
-function selectVersion(v) {
-  currentVersion = v;
-  document.getElementById('freeCard').classList.toggle('active', v === 'free');
-  document.getElementById('premiumCard').classList.toggle('active', v === 'premium');
-  document.getElementById('freeForm').classList.toggle('hidden', v === 'premium');
-  document.getElementById('premiumForm').classList.toggle('hidden', v === 'free');
-  document.getElementById('premiumResults').classList.add('hidden');
-}
-
-(function() {
-  const c = document.getElementById('stars');
-  for (let i = 0; i < 170; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random() < 0.7 ? 1 : Math.random() < 0.8 ? 2 : 3;
-    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--min:${0.05+Math.random()*0.2};--max:${0.5+Math.random()*0.5};animation-delay:${Math.random()*5}s`;
+// ─── Stars ────────────────────────────────────────────────────────────────────
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<170;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()<0.7?1:Math.random()<0.8?2:3;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--min:${0.05+Math.random()*0.2};--max:${0.5+Math.random()*0.5};animation-delay:${Math.random()*5}s`;
     c.appendChild(s);
   }
 })();
 
-function generateAmuletSVG(natalData) {
-  const sunSign = natalData.sunSign;
-  const moonSign = natalData.moonSign;
-  const elements = ['🔥','🌍','💨','💧'];
-  const colors = ['#f0c040','#c4b090','#b8c4d4','#5070c0'];
-  
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="amulet-svg">
-    <defs><radialGradient id="amuletGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:${colors[Math.floor(Math.random()*colors.length)]};stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:0.1" />
-    </radialGradient></defs>
-    <circle cx="100" cy="100" r="95" fill="url(#amuletGrad)" stroke="#c9a84c" stroke-width="2"/>
-    <circle cx="100" cy="100" r="80" fill="none" stroke="#6dbf8a" stroke-width="1" opacity="0.6"/>
-    <circle cx="100" cy="100" r="60" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.8"/>
-    <text x="100" y="35" text-anchor="middle" font-size="24" fill="#c9a84c">${sunSign.symbol}</text>
-    <text x="100" y="175" text-anchor="middle" font-size="24" fill="#b8c4d4">${moonSign.symbol}</text>
-    <text x="45" y="105" text-anchor="middle" font-size="16">${elements[0]}</text>
-    <text x="155" y="105" text-anchor="middle" font-size="16">${elements[1]}</text>
-    <text x="100" y="65" text-anchor="middle" font-size="14">${elements[2]}</text>
-    <text x="100" y="145" text-anchor="middle" font-size="14">${elements[3]}</text>
-    <circle cx="100" cy="100" r="25" fill="none" stroke="#c9a84c" stroke-width="2" opacity="0.7"/>
-    <circle cx="100" cy="100" r="20" fill="none" stroke="#6dbf8a" stroke-width="1" opacity="0.5"/>
-    <text x="100" y="107" text-anchor="middle" font-size="20" fill="#c9a84c">⊕</text>
+// ─── Astrología ───────────────────────────────────────────────────────────────
+const ZODIAC_13=[
+  {name:'Aries',symbol:'♈',start:[3,21],days:28,color:'#c47060'},
+  {name:'Tauro',symbol:'♉',start:[4,18],days:28,color:'#c4b090'},
+  {name:'Géminis',symbol:'♊',start:[5,16],days:28,color:'#b8c4d4'},
+  {name:'Cáncer',symbol:'♋',start:[6,13],days:28,color:'#9b8fc4'},
+  {name:'Leo',symbol:'♌',start:[7,11],days:28,color:'#f0c040'},
+  {name:'Virgo',symbol:'♍',start:[8,8],days:28,color:'#5ab4a8'},
+  {name:'Libra',symbol:'♎',start:[9,5],days:28,color:'#c47a8f'},
+  {name:'Escorpio',symbol:'♏',start:[10,3],days:28,color:'#7a4060'},
+  {name:'Ofiuco',symbol:'⛎',start:[10,31],days:18,color:'#6dbf8a',ophiuchus:true},
+  {name:'Sagitario',symbol:'♐',start:[11,18],days:28,color:'#c9a84c'},
+  {name:'Capricornio',symbol:'♑',start:[12,16],days:28,color:'#7090b0'},
+  {name:'Acuario',symbol:'♒',start:[1,13],days:28,color:'#5070c0'},
+  {name:'Piscis',symbol:'♓',start:[2,10],days:28,color:'#8070c0'},
+];
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const PLANETARY_DAYS=[
+  {planet:'Sol',es:'Domingo',symbol:'☉'},{planet:'Luna',es:'Lunes',symbol:'☽'},
+  {planet:'Marte',es:'Martes',symbol:'♂'},{planet:'Mercurio',es:'Miércoles',symbol:'☿'},
+  {planet:'Júpiter',es:'Jueves',symbol:'♃'},{planet:'Venus',es:'Viernes',symbol:'♀'},
+  {planet:'Saturno',es:'Sábado',symbol:'♄'},
+];
+
+function norm360(a){return((a%360)+360)%360;}
+function daysSinceJ2000(d){return(d-new Date('2000-01-01T12:00:00Z'))/86400000;}
+function longitudeToSign13(lon){
+  const n=norm360(lon);
+  if(n>=233&&n<248)return ZODIAC_13[8];
+  const idx=Math.floor(n/30);
+  const map=[0,1,2,3,4,5,6,7,9,10,11,12];
+  return ZODIAC_13[map[idx]??idx]||ZODIAC_13[0];
+}
+function getZodiacalDate(gd){
+  const y=gd.getFullYear();const th=[];
+  for(let i=0;i<ZODIAC_13.length;i++){
+    const[sm,sd]=ZODIAC_13[i].start;
+    th.push({date:new Date(sm<=2?y+1:y,sm-1,sd),idx:i});
+  }
+  th.push({date:new Date(y+1,2,21),idx:0});
+  th.sort((a,b)=>a.date-b.date);
+  for(let i=th.length-1;i>=0;i--){
+    if(gd>=th[i].date){
+      const sign=ZODIAC_13[th[i].idx];
+      const day=Math.floor((gd-th[i].date)/86400000)+1;
+      return{sign,day,outsideTime:day>sign.days};
+    }
+  }
+  return{sign:ZODIAC_13[12],day:1};
+}
+function getPlanetaryPositions(date){
+  const d=daysSinceJ2000(date);
+  const pl=[
+    {name:'Sol',symbol:'☉',color:'#f0c040',L0:280.46,rate:0.9856474},
+    {name:'Luna',symbol:'☽',color:'#b8c4d4',L0:218.316,rate:13.176396},
+    {name:'Mercurio',symbol:'☿',color:'#a0b4c8',L0:252.251,rate:4.092317},
+    {name:'Venus',symbol:'♀',color:'#c4b090',L0:181.980,rate:1.602136},
+    {name:'Marte',symbol:'♂',color:'#c47060',L0:355.433,rate:0.524039},
+    {name:'Júpiter',symbol:'♃',color:'#c9a84c',L0:34.396,rate:0.083086},
+    {name:'Saturno',symbol:'♄',color:'#9b8fc4',L0:50.077,rate:0.033460},
+    {name:'Urano',symbol:'⛢',color:'#5ab4a8',L0:314.055,rate:0.011732},
+    {name:'Neptuno',symbol:'♆',color:'#5070c0',L0:304.348,rate:0.005981},
+    {name:'Plutón',symbol:'♇',color:'#907060',L0:238.929,rate:0.003968},
+  ];
+  return pl.map(p=>{
+    const lon=norm360(p.L0+p.rate*d);
+    return{...p,longitude:lon,sign:longitudeToSign13(lon),degree:Math.floor(lon%30)};
+  });
+}
+function getMoonPhase(date){
+  const d=daysSinceJ2000(date);
+  const phase=norm360(13.176396*d-0.9856474*d)/360;
+  const phases=[
+    {min:0,max:0.0625,name:'Luna Nueva',symbol:'🌑'},{min:0.0625,max:0.1875,name:'Luna Creciente',symbol:'🌒'},
+    {min:0.1875,max:0.3125,name:'Cuarto Creciente',symbol:'🌓'},{min:0.3125,max:0.4375,name:'Gibosa Creciente',symbol:'🌔'},
+    {min:0.4375,max:0.5625,name:'Luna Llena',symbol:'🌕'},{min:0.5625,max:0.6875,name:'Gibosa Menguante',symbol:'🌖'},
+    {min:0.6875,max:0.8125,name:'Cuarto Menguante',symbol:'🌗'},{min:0.8125,max:0.9375,name:'Luna Menguante',symbol:'🌘'},
+    {min:0.9375,max:1,name:'Luna Nueva',symbol:'🌑'},
+  ];
+  return phases.find(p=>phase>=p.min&&phase<p.max)||phases[0];
+}
+function getSunSign13(m,d){
+  for(let i=ZODIAC_13.length-1;i>=0;i--){
+    const[sm,sd]=ZODIAC_13[i].start;
+    if(sm>2&&(m>sm||(m===sm&&d>=sd)))return ZODIAC_13[i];
+    if(sm<=2&&m<3&&(m>sm||(m===sm&&d>=sd)))return ZODIAC_13[i];
+  }
+  return ZODIAC_13[12];
+}
+
+// ─── Amuleto SVG ─────────────────────────────────────────────────────────────
+function generateAmuletSVG(sunSign, moonSign, venusSign) {
+  const sc = sunSign.color || '#c9a84c';
+  const mc = moonSign.color || '#b8c4d4';
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="200" height="200" id="amuletSVG">
+    <defs>
+      <radialGradient id="ag" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="${sc}" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="${mc}" stop-opacity="0.05"/>
+      </radialGradient>
+    </defs>
+    <circle cx="100" cy="100" r="96" fill="url(#ag)" stroke="${sc}" stroke-width="1.5"/>
+    <circle cx="100" cy="100" r="82" fill="none" stroke="${mc}" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.6"/>
+    <circle cx="100" cy="100" r="64" fill="none" stroke="${sc}" stroke-width="1" opacity="0.5"/>
+    <!-- 8 radios -->
+    ${[0,45,90,135,180,225,270,315].map(a=>{
+      const r=a*Math.PI/180;
+      return `<line x1="${100+64*Math.sin(r)}" y1="${100-64*Math.cos(r)}" x2="${100+82*Math.sin(r)}" y2="${100-82*Math.cos(r)}" stroke="${sc}" stroke-width="0.8" opacity="0.4"/>`;
+    }).join('')}
+    <!-- Sol (arriba) -->
+    <text x="100" y="24" text-anchor="middle" font-size="26" fill="${sc}">${sunSign.symbol}</text>
+    <!-- Luna (abajo) -->
+    <text x="100" y="188" text-anchor="middle" font-size="22" fill="${mc}">${moonSign.symbol}</text>
+    <!-- Venus (derecha) -->
+    <text x="178" y="106" text-anchor="middle" font-size="18" fill="#c4b090">${venusSign.symbol}</text>
+    <!-- Centro -->
+    <circle cx="100" cy="100" r="22" fill="none" stroke="${sc}" stroke-width="1.5" opacity="0.8"/>
+    <text x="100" y="107" text-anchor="middle" font-size="22" fill="${sc}">⊕</text>
+    <!-- Nombre -->
+    <text x="100" y="148" text-anchor="middle" font-size="7" fill="${sc}" letter-spacing="3" opacity="0.6" text-transform="uppercase">SOLVENS AMORIS</text>
   </svg>`;
 }
 
-async function generateReading() {
-  const birthDate = document.getElementById('birthDate').value;
-  if (!birthDate) {
-    document.getElementById('formError').textContent = 'Ingresa tu fecha de nacimiento.';
-    document.getElementById('formError').classList.remove('hidden');
-    return;
-  }
+// ─── Estado global ────────────────────────────────────────────────────────────
+let premiumData = null;
+let stripe = null;
+let cardElement = null;
 
-  // Ocultamos errores y avisamos que estamos consultando
-  document.getElementById('formError').classList.add('hidden');
-  const btn = document.getElementById('readBtn');
-  btn.disabled = true;
-  btn.innerText = '✦ Consultando los astros... ✦';
-
-  try {
-    // Usamos tu puente seguro en Vercel
-    const response = await fetch('/api/consultar-reloj', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fechaNacimiento: birthDate })
-    });
-
-    const data = await response.json();
-    const textoAstrologico = data.content && data.content[0] ? data.content[0].text : "Los astros se han alineado.";
-
-    // Mostramos el resultado en la versión gratuita
-    let freeResult = document.getElementById('freeResultText');
-    if (!freeResult) {
-        freeResult = document.createElement('div');
-        freeResult.id = 'freeResultText';
-        freeResult.style.marginTop = '20px';
-        freeResult.style.padding = '15px';
-        freeResult.style.borderTop = '1px solid rgba(201,168,76,0.2)';
-        freeResult.style.color = '#e8e0f0';
-        freeResult.style.fontSize = '0.9rem';
-        freeResult.style.lineHeight = '1.6';
-        document.getElementById('freeForm').appendChild(freeResult);
-    }
-    
-    freeResult.innerHTML = `<p style="color: #c9a84c; margin-bottom: 10px;">✦ Tu Lectura Diaria</p>${textoAstrologico.replace(/\n/g, '<br>')}`;
-    btn.innerText = '✦ Consultar el Reloj ✦';
-    btn.disabled = false;
-
-  } catch (error) {
-    alert('El velo está cerrado. Intenta de nuevo.');
-    btn.innerText = '✦ Consultar el Reloj ✦';
-    btn.disabled = false;
-  }
-}
-
+// ─── PASO 1: Generar lectura premium ─────────────────────────────────────────
 async function generatePremiumReading() {
-  const birthDate = document.getElementById('birthDatePrem').value;
-  if (!birthDate) {
-    document.getElementById('formErrorPrem').textContent = 'Ingresa tu fecha de nacimiento.';
-    document.getElementById('formErrorPrem').classList.remove('hidden');
-    return;
-  }
+  const birthDate    = document.getElementById('birthDate').value;
+  const birthTime    = document.getElementById('birthTime').value;
+  const birthCity    = document.getElementById('birthCity').value.trim();
+  const birthCountry = document.getElementById('birthCountry').value.trim();
+  const errEl        = document.getElementById('formError');
 
-  // Preparamos la interfaz mientras la IA piensa
-  document.getElementById('formErrorPrem').classList.add('hidden');
-  document.getElementById('readingContentPrem').innerHTML = '<p style="color: #c9a84c; text-align: center;">Consultando los astros...</p>';
-  document.getElementById('premiumResults').classList.remove('hidden');
-  document.getElementById('paymentSection').classList.add('hidden');
+  if (!birthDate) {
+    errEl.textContent = 'Por favor ingresa tu fecha de nacimiento.';
+    errEl.classList.remove('hidden'); return;
+  }
+  errEl.classList.add('hidden');
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = '👑 Consultando los astros… ✦';
+
+  document.getElementById('results').classList.remove('hidden');
+  document.getElementById('readingContent').innerHTML =
+    `<div class="loading"><div class="orb"></div>Tejiendo tu carta astral completa…</div>`;
+  document.getElementById('paymentBox').classList.add('hidden');
+  document.getElementById('pdfUnlock').classList.add('hidden');
+
+  const today = new Date();
+  const bDate = new Date(birthDate);
+  const [bHour, bMin] = birthTime.split(':').map(Number);
+
+  const todayPositions = getPlanetaryPositions(today);
+  const natalPositions = getPlanetaryPositions(bDate);
+  const moon     = getMoonPhase(today);
+  const moonPos  = todayPositions.find(p=>p.name==='Luna');
+  const todayPd  = PLANETARY_DAYS[today.getDay()];
+  const todayZd  = getZodiacalDate(today);
+  const natalZd  = getZodiacalDate(bDate);
+
+  const sunSign   = getSunSign13(bDate.getMonth()+1, bDate.getDate());
+  const natalMoon = natalPositions.find(p=>p.name==='Luna');
+  const natalMerc = natalPositions.find(p=>p.name==='Mercurio');
+  const natalVenus= natalPositions.find(p=>p.name==='Venus');
+  const natalMars = natalPositions.find(p=>p.name==='Marte');
+  const natalJup  = natalPositions.find(p=>p.name==='Júpiter');
+  const natalSat  = natalPositions.find(p=>p.name==='Saturno');
+
+  // Amuleto
+  const amuletHTML = generateAmuletSVG(sunSign, natalMoon.sign, natalVenus.sign);
+  document.getElementById('amuletWrap').innerHTML = amuletHTML;
+
+  const planetSummary = todayPositions.map(p=>
+    `${p.name} en ${p.sign.name}${p.sign.ophiuchus?' (Ofiuco)':''} ${p.degree}°`
+  ).join('; ');
+
+  const natalSummary = [
+    `Sol: ${sunSign.name}${sunSign.ophiuchus?' (Ofiuco — sanador, guardián de la serpiente)':''}`,
+    `Luna: ${natalMoon.sign.name}`,
+    `Mercurio: ${natalMerc.sign.name}`,
+    `Venus: ${natalVenus.sign.name}`,
+    `Marte: ${natalMars.sign.name}`,
+    `Júpiter: ${natalJup.sign.name}`,
+    `Saturno: ${natalSat.sign.name}`,
+    `Día natal zodiacal: Día ${natalZd.day} de ${natalZd.sign.name}`,
+  ].join('\n');
+
+  // Prompt PREMIUM — mucho más profundo que el gratuito
+  const prompt = `Eres Solvens Amoris, un astrólogo visionario especializado en el zodíaco de 13 signos con Ofiuco. Tu estilo es poético, profundo y transformador. Esta es una lectura PREMIUM COMPLETA — la más profunda que puedes ofrecer.
+
+FECHA DE HOY:
+- ${todayPd.es} ${today.getDate()} de ${MESES[today.getMonth()]} de ${today.getFullYear()}
+- Día de ${todayPd.planet} ${todayPd.symbol} · Día ${todayZd.day} de ${todayZd.sign.name} ${todayZd.sign.symbol}
+- Fase lunar: ${moon.name} en ${moonPos.sign.name}
+
+CIELO ACTUAL (posiciones de hoy):
+${planetSummary}
+
+CARTA NATAL COMPLETA (zodíaco de 13 signos):
+${natalSummary}
+- Lugar de nacimiento: ${birthCity||'no especificado'}, ${birthCountry||'no especificado'}
+- Hora de nacimiento: ${birthTime}
+
+Redacta una CARTA ASTRAL COMPLETA Y PROFUNDA con EXACTAMENTE estas 6 secciones, cada una con su título en MAYÚSCULAS seguido de dos puntos:
+
+PROPÓSITO DE VIDA: Analiza el Sol natal y cómo define la misión esencial de esta persona en el zodíaco de 13 signos. Si hay influencia de Ofiuco, profundiza en ello. (3 párrafos ricos)
+
+MUNDO EMOCIONAL Y ALMA: Interpreta la Luna natal — el hogar emocional, los patrones inconscientes, lo que esta persona necesita para sentirse segura. (2 párrafos)
+
+MENTE Y COMUNICACIÓN: Mercurio natal y cómo procesa la realidad, aprende, se comunica. Sus dones y sus sombras mentales. (2 párrafos)
+
+AMOR Y BELLEZA: Venus y Marte natales — cómo esta persona ama, qué la atrae, cómo expresa su deseo. La polaridad entre su corazón y su fuego. (2 párrafos)
+
+TRÁNSITOS DE HOY: Cómo el cielo actual dialoga con esta carta natal. Qué planetas activan qué posiciones natales. La fase de ${moon.name} y qué cierra o abre. Qué trabajar específicamente hoy. (3 párrafos)
+
+MENSAJE DEL RELOJ ASTROLÓGICO: Una síntesis poética y transformadora. Una frase-mantra para esta persona. Una acción concreta para los próximos 7 días. (2 párrafos + 1 mantra breve en cursiva)
+
+Escribe en español, segunda persona (tú), voz cálida, sabia y profunda. Sin asteriscos ni markdown. Solo párrafos fluidos con los títulos de sección en MAYÚSCULAS tal como los especifiqué. Esta lectura debe sentirse como un regalo único e irrepetible.`;
 
   try {
-    // Usamos tu puente seguro en Vercel
-    const response = await fetch('/api/consultar-reloj', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fechaNacimiento: birthDate })
+    const res = await fetch('/api/consultar-reloj', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const text = data.content?.[0]?.text;
+    if (!text) throw new Error('Respuesta vacía');
+
+    // Parsear secciones por títulos en mayúsculas
+    const sections = [
+      'PROPÓSITO DE VIDA',
+      'MUNDO EMOCIONAL Y ALMA',
+      'MENTE Y COMUNICACIÓN',
+      'AMOR Y BELLEZA',
+      'TRÁNSITOS DE HOY',
+      'MENSAJE DEL RELOJ ASTROLÓGICO',
+    ];
+
+    let html = '<div class="reading-text">';
+    let remaining = text.trim();
+    const sectionIcons = ['☉','☽','☿','♀','✦','🔮'];
+
+    sections.forEach((title, idx) => {
+      const nextTitle = sections[idx+1];
+      const startIdx = remaining.indexOf(title + ':');
+      if (startIdx === -1) return;
+      const content = nextTitle
+        ? remaining.substring(startIdx + title.length + 1, remaining.indexOf(nextTitle + ':') || remaining.length)
+        : remaining.substring(startIdx + title.length + 1);
+      html += `<div class="reading-section-title">${sectionIcons[idx]} ${title}</div>`;
+      html += content.trim().split(/\n+/).map(p => p.trim() ? `<p>${p.trim()}</p>` : '').join('');
     });
 
-    const data = await response.json();
-    const textoAstrologico = data.content && data.content[0] ? data.content[0].text : "Los astros se han alineado.";
+    // Si el parseo falla (texto sin los títulos exactos), mostramos todo igual
+    if (html === '<div class="reading-text">') {
+      html += text.trim().split(/\n+/).map(p => p.trim() ? `<p>${p.trim()}</p>` : '').join('');
+    }
+    html += '</div>';
 
-    // Generamos el amuleto
-    const sunSign = { name: 'Sol', symbol: '☉' };
-    const moonSign = { name: 'Luna', symbol: '☽' };
-    premiumData = { birthDate, sunSign, moonSign, lectura: textoAstrologico };
+    document.getElementById('readingContent').innerHTML = html;
 
-    const amuletSVG = generateAmuletSVG({ sunSign, moonSign });
-    document.getElementById('amuletContainer').innerHTML = amuletSVG;
-    document.getElementById('paymentSection').classList.remove('hidden');
-    
-    // Mostramos la lectura Premium
-    document.getElementById('readingContentPrem').innerHTML = `<p style="color: #e8e0f0; font-size: 0.95rem; line-height: 1.7; padding: 15px;">${textoAstrologico.replace(/\n/g, '<br>')}</p>`;
+    // Guardar para el PDF
+    premiumData = { birthDate, birthTime, birthCity, birthCountry, readingHTML: html, amuletHTML };
 
-  } catch (error) {
-    document.getElementById('readingContentPrem').innerHTML = '<p style="color: #c47a8f; text-align: center;">El velo está cerrado. Intenta de nuevo.</p>';
+    // Inicializar Stripe y mostrar pago
+    initStripePayment();
+    document.getElementById('paymentBox').classList.remove('hidden');
+
+  } catch(err) {
+    document.getElementById('readingContent').innerHTML =
+      `<div class="error-msg">No se pudo generar la carta. Por favor intenta de nuevo.<br><small>${err.message}</small></div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '👑 Generar mi Carta Astral Completa ✦';
+}
+
+// ─── PASO 2: Stripe ───────────────────────────────────────────────────────────
+function initStripePayment() {
+  if (stripe) return; // ya inicializado
+  stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+  const elements = stripe.elements();
+  cardElement = elements.create('card', {
+    style: {
+      base: { color: '#e8e0f0', fontFamily: 'Raleway, sans-serif', fontSize: '16px', '::placeholder': { color: '#7a7090' } },
+      invalid: { color: '#c47a8f' },
+    }
+  });
+  cardElement.mount('#card-element');
+}
+
+async function handlePayment() {
+  const payBtn = document.getElementById('payBtn');
+  const msgEl  = document.getElementById('payment-message');
+  payBtn.disabled = true;
+  payBtn.textContent = '🔒 Procesando pago…';
+  msgEl.className = 'hidden';
+  msgEl.textContent = '';
+
+  try {
+    // 1. Crear PaymentIntent en tu backend
+    const intentRes = await fetch(PAYMENT_INTENT_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ amount: 300, currency: 'usd' }), // $3.00
+    });
+    if (!intentRes.ok) throw new Error('No se pudo crear la sesión de pago.');
+    const { clientSecret } = await intentRes.json();
+
+    // 2. Confirmar el pago con Stripe
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card: cardElement },
+    });
+
+    if (error) {
+      msgEl.textContent = error.message;
+      msgEl.className = 'error';
+      payBtn.disabled = false;
+      payBtn.textContent = '🔒 Pagar $3 USD y Descargar PDF';
+      return;
+    }
+
+    if (paymentIntent.status === 'succeeded') {
+      // Ocultar caja de pago, mostrar descarga
+      document.getElementById('paymentBox').classList.add('hidden');
+      document.getElementById('pdfUnlock').classList.remove('hidden');
+    }
+
+  } catch(err) {
+    msgEl.textContent = `Error: ${err.message}`;
+    msgEl.className = 'error';
+    payBtn.disabled = false;
+    payBtn.textContent = '🔒 Pagar $3 USD y Descargar PDF';
   }
 }
 
+// ─── PASO 3: Descargar PDF completo ──────────────────────────────────────────
 function downloadPDF() {
   if (!premiumData) return;
-  const element = document.createElement('div');
-  element.innerHTML = `
-    <h1 style="color: #c9a84c;">Tu Carta Astral Personalizada</h1>
-    <p>Fecha: ${premiumData.birthDate}</p>
-    ${document.getElementById('amuletContainer').innerHTML}
-    <p style="text-align: center; color: #7a6330;">© 2026 Solvens Amoris</p>
+
+  const today = new Date();
+  const dateStr = `${today.getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][today.getMonth()]} de ${today.getFullYear()}`;
+
+  const pdfContent = document.createElement('div');
+  pdfContent.style.cssText = 'font-family: Georgia, serif; color: #111; padding: 40px; max-width: 700px; margin: 0 auto; background: #fff;';
+  pdfContent.innerHTML = `
+    <div style="text-align:center; border-bottom: 2px solid #c9a84c; padding-bottom: 28px; margin-bottom: 32px;">
+      <p style="font-size:11px; letter-spacing:4px; color:#7a6330; text-transform:uppercase; margin-bottom:8px;">Solvens Amoris · Carta Astral Pro</p>
+      <h1 style="font-size:28px; color:#7a4c00; font-weight:400; letter-spacing:2px; margin:0 0 8px;">Carta Astral Completa</h1>
+      <p style="font-size:13px; color:#555; margin:0;">Zodíaco de 13 Signos · ${dateStr}</p>
+      <p style="font-size:12px; color:#888; margin-top:6px;">Nacimiento: ${premiumData.birthDate} · ${premiumData.birthTime} · ${premiumData.birthCity || '—'}, ${premiumData.birthCountry || '—'}</p>
+    </div>
+
+    <div style="text-align:center; margin: 0 auto 36px; max-width:220px;">
+      ${premiumData.amuletHTML.replace(/id="amuletSVG"/, 'id="amuletSVGpdf"')}
+      <p style="font-size:10px; color:#888; margin-top:8px; letter-spacing:2px;">TU AMULETO NATAL PERSONAL</p>
+    </div>
+
+    <div style="font-size:14px; line-height:1.85; color:#222;">
+      ${premiumData.readingHTML
+        .replace(/<div class="reading-section-title">/g, '<h2 style="font-size:13px;letter-spacing:3px;color:#7a4c00;margin:28px 0 10px;font-weight:400;border-bottom:1px solid #e8d9b8;padding-bottom:6px;">')
+        .replace(/<\/div>/g, '</h2>')
+        .replace(/<p>/g, '<p style="margin:0 0 14px;">')
+      }
+    </div>
+
+    <div style="text-align:center; margin-top:50px; padding-top:20px; border-top:1px solid #e8d9b8;">
+      <p style="font-size:10px; color:#aaa; letter-spacing:3px;">© 2026 SOLVENS AMORIS · TODOS LOS DERECHOS RESERVADOS</p>
+    </div>
   `;
-  const opt = { margin: 10, filename: `Carta_Astral_${premiumData.birthDate}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' } };
-  html2pdf().set(opt).from(element).save();
+
+  const opt = {
+    margin: [12, 14, 12, 14],
+    filename: `Carta_Astral_Solvens_Amoris_${premiumData.birthDate}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+  };
+
+  html2pdf().set(opt).from(pdfContent).save();
 }
 </script>
 </body>
