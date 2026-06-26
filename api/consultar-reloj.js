@@ -16,7 +16,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // URL actualizada con el nombre exacto del modelo soportado
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
-        // Apagamos los filtros de seguridad que suelen bloquear temas esotéricos
+        // Filtros de seguridad apagados para evitar bloqueos por lenguaje esotérico
         safetySettings: [
           { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
           { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // 1. Si Google devuelve un error interno (ej. llave inválida, cuota excedida)
+    // 1. Si Google devuelve un error interno (ej. modelo no encontrado, llave inválida)
     if (data.error) {
       return res.status(200).json({ 
         content: [{ text: `🚨 Error de Gemini: ${data.error.message}` }] 
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Si la respuesta es exitosa
+    // 3. Si la respuesta es exitosa y trae el texto
     if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
       const text = data.candidates[0].content.parts[0].text;
       return res.status(200).json({ content: [{ text }] });
