@@ -709,8 +709,7 @@ Redacta una lectura astrológica del día de hoy para esta persona usando el sis
 
 Escribe en español, segunda persona (tú), voz cálida y sabia. Sin asteriscos ni markdown. Sin bullets. Solo párrafos fluidos.`;
 
-    try {
-    // Enviamos el súper prompt calculado a tu puente en Vercel
+        try {
     const res = await fetch('/api/consultar-reloj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -718,16 +717,22 @@ Escribe en español, segunda persona (tú), voz cálida y sabia. Sin asteriscos 
     });
       
     const data = await res.json();
-    const text = data.content?.map(b => b.text || '').join('') || '';
-    if (!text) throw new Error();
-    const html = text.trim().split(/\n+/).filter(p => p.trim())
-      .map(p => `<p>${p.trim()}</p>`).join('');
+    
+    // AQUÍ ESTÁ EL CAMBIO: Vamos a ver si hay texto o si hay un error
+    if (data.content && data.content[0] && data.content[0].text) {
+        const text = data.content[0].text;
+        const html = text.trim().split(/\n+/).map(p => `<p>${p.trim()}</p>`).join('');
+        document.getElementById('readingContent').innerHTML = `<div class="reading-text">${html}</div>`;
+    } else {
+        // Si no hay contenido, mostramos el error que envía Anthropic
+        document.getElementById('readingContent').innerHTML = 
+            `<div class="error-msg">Error: ${JSON.stringify(data)}</div>`;
+    }
+  } catch (err) {
     document.getElementById('readingContent').innerHTML =
-      `<div class="reading-text">${html}</div>`;
-  } catch {
-    document.getElementById('readingContent').innerHTML =
-      `<div class="error-msg">No se pudo obtener la lectura. Intenta de nuevo.</div>`;
+      `<div class="error-msg">No se pudo obtener la lectura. Error: ${err.message}</div>`;
   }
+
 
   document.getElementById('readBtn').disabled = false;
 }
