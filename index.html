@@ -709,16 +709,14 @@ Redacta una lectura astrológica del día de hoy para esta persona usando el sis
 
 Escribe en español, segunda persona (tú), voz cálida y sabia. Sin asteriscos ni markdown. Sin bullets. Solo párrafos fluidos.`;
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    try {
+    // Enviamos el súper prompt calculado a tu puente en Vercel
+    const res = await fetch('/api/consultar-reloj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      body: JSON.stringify({ prompt: prompt })
     });
+      
     const data = await res.json();
     const text = data.content?.map(b => b.text || '').join('') || '';
     if (!text) throw new Error();
